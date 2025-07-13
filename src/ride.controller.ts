@@ -3,8 +3,10 @@ import { Ride } from './Ride';
 
 export const createRide = async (req: Request, res: Response) => {
   try {
+    console.log(req.body);
     const ride = new Ride(req.body);
     const savedRide = await ride.save();
+    console.log(savedRide);
     res.status(201).json(savedRide);
   } catch (err) {
     res.status(500).json({ message: 'Error creating ride', error: err });

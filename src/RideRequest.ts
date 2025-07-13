@@ -19,4 +19,4 @@ const rideRequestSchema = new mongoose.Schema({
   responseTime: { type: Date }
 });
 
-export const RideRequest = mongoose.model('RideRequest', rideRequestSchema);
+export const RideRequest = mongoose.model('GT.RideRequest', rideRequestSchema);

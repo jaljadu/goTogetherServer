@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const rideSchema = new mongoose.Schema({
-  driverId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  driverId: String,
   origin: {
     address: String,
     lat: Number,
@@ -12,23 +12,13 @@ const rideSchema = new mongoose.Schema({
     lat: Number,
     lng: Number
   },
-  waypoints: [{
-    address: String,
-    lat: Number,
-    lng: Number
-  }],
-  startTime: { type: Date, required: true },
-  seatsAvailable: { type: Number, required: true },
-  vehicleDetails: {
-    make: String,
-    model: String,
-    color: String,
-    plateNumber: String
-  },
-  pricePerSeat: { type: Number, required: true },
+  startDate: { type: Date, required: false },
+  startTime: { type: Date, required: false },
+  seatsAvailable: { type: Number, required: false },
+  pricePerSeat: { type: Number, required: false },
   isRecurring: { type: Boolean, default: false },
-  recurrencePattern: { type: String, enum: ['Daily', 'Weekly', 'Custom'] },
-  isActive: { type: Boolean, default: true }
-}, { timestamps: true });
+  recurringPattern: { type: String, default: false },
+  isActive: { type: Boolean, default: false }
+}, { timestamps: false });
 
-export const Ride = mongoose.model('Ride', rideSchema);
+export const Ride = mongoose.model('GT.Ride', rideSchema);
