@@ -17,7 +17,23 @@ const geoPointSchema = {
 const RideSchema = new mongoose.Schema({
   sourceLocation: geoPointSchema,
   destinationLocation: geoPointSchema,
-  waypoints: [geoPointSchema], // ✅ No _id here
+  waypoints: {
+    _id: false, // Prevent auto _id
+    type: [{
+      type: { type: String, enum: ['Point'], required: true },
+      coordinates: {
+        type: [Number],
+        required: true,
+        validate: {
+          validator: function (val: number[]) {
+            return val.length === 2 && val.every(coord => typeof coord === 'number');
+          },
+          message: 'Coordinates must be [lng, lat]',
+        },
+      }
+    }],
+    index: '2dsphere' // ✅ Add 2dsphere index
+  },
   city: { type: String },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   userType: { type: String },
@@ -32,9 +48,8 @@ const RideSchema = new mongoose.Schema({
 // Geo indexes
 RideSchema.index({ sourceLocation: '2dsphere' });
 RideSchema.index({ destinationLocation: '2dsphere' });
-RideSchema.index({ waypoints: '2dsphere' });
 
-export default mongoose.model('Ride', RideSchema);
+
 
 
 export const Ride = mongoose.model('GT.Rides', RideSchema);

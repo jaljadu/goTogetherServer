@@ -4,7 +4,7 @@ import { createRide, getAllRides, getRideById } from './ride.controller';
 const router = Router();
 
 router.post('/', createRide);
-router.get('/', getAllRides);
+router.get('/:id', getAllRides);
 
 
 export default router;
