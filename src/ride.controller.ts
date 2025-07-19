@@ -42,7 +42,11 @@ export const getAllRides = async (_req: Request, res: Response) => {
 
     const userCoords = userRide.sourceLocation;
     if (!userCoords) return res.status(400).json({ message: 'User location not found' });
-  console.log(userCoords);
+    console.log(userCoords);
+    const rideStart = new Date(userRide?.date ?? new Date());
+    const rideStartWindowStart = new Date(rideStart.getTime() - 2 * 60 * 60 * 1000);
+    const rideStartWindowEnd = new Date(rideStart.getTime() + 2 * 60 * 60 * 1000);
+
     // MongoDB aggregation with $geoNear
     const rides = await Ride.aggregate([
     
@@ -54,12 +58,11 @@ export const getAllRides = async (_req: Request, res: Response) => {
           spherical: true,
           key: 'sourceLocation',
           query: {
+            date: { $gte: rideStartWindowStart, $lte: rideStartWindowEnd },
             userId: { $ne: userId },
-            ...(userType === 'car_owner' || userType === 'biker'
-              ? { userType: 'rider' }
-              : userType === 'rider'
-              ? { userType: 'car_owner' }
-              : {}),
+            userType: userRide.userType === 'rider' 
+          ? { $in: ['biker', 'car_owner'] } 
+          : 'rider',
           },
         },
       },

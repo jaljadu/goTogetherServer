@@ -11,7 +11,11 @@ const geoPointSchema = {
       validator: (v: number[]) => v.length === 2 && v.every(n => typeof n === 'number'),
       message: 'Coordinates must be an array of two numbers [lng, lat]'
     }
-  }
+  },
+  placeId: {
+    type: String,
+    required: false,
+  },
 };
 
 const RideSchema = new mongoose.Schema({
@@ -34,7 +38,8 @@ const RideSchema = new mongoose.Schema({
     }],
     index: '2dsphere' // ✅ Add 2dsphere index
   },
-  city: { type: String },
+  isRecurring: { type: Boolean },
+  recurringPattern: { type: String },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   userType: { type: String },
   seatsAvailable: { type: Number },
