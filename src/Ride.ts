@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 
-const geoPointSchema = {
+export const geoPointSchema = {
   _id: false, // Prevent auto _id
   type: { type: String, enum: ['Point'], required: true },
   coordinates: {
