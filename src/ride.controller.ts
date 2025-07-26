@@ -12,14 +12,16 @@ export const createRide = async (req: Request, res: Response) => {
   try {
    
     await Ride.collection.dropIndexes();
-await Ride.syncIndexes(); // Or Ride.createIndexes();
+  await Ride.syncIndexes(); // Or Ride.createIndexes();
 if (Array.isArray(req.body.waypoints)) {
   req.body.waypoints = req.body.waypoints.map(sanitizePoint);
 }
-    
-    let ride = new Ride(req.body);
-    console.log(JSON.stringify(ride, null, 2));
-    const savedRide = await ride.save();
+    if (req.body._id) delete req.body._id;
+     console.log(JSON.stringify(req.body, null, 2));
+    const savedRide = await Ride.create(req.body);
+    //let ride = new Ride(req.body);
+   
+    //const savedRide = await ride.save();
     console.log(savedRide);
     res.status(201).json(savedRide);
   } catch (err) {
