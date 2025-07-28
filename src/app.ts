@@ -6,7 +6,7 @@ import rideRoutes from './ride.routes';
 import rideRequestRoutes from './riderequest.routs';
 import  priceRoutes from './price.routes';
 import notificationRoutes from './notification.router';
-
+import  locationRoutes from './locationsearch.route';
 
 dotenv.config();
 
@@ -20,4 +20,5 @@ app.use('/api/rides', rideRoutes);
 app.use('/api/riderequest', rideRequestRoutes);
 app.use('/api/notification', notificationRoutes);
 app.use('/api/priceConfig', priceRoutes);
+app.use('/api/locationsearch', locationRoutes);
 export default app;

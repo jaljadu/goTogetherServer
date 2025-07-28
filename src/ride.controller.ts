@@ -89,10 +89,10 @@ export const getRideById = async (req: Request, res: Response) => {
   try {
     const ride = await Ride.findById(req.params.id).populate('driverId');
     if (!ride) {
-      return res.status(404).json({ message: 'Ride not found' });
+      return res.json([]);
     }
     res.json(ride);
   } catch (err) {
-    res.status(500).json({ message: 'Error fetching ride', error: err });
+    return res.json([]);
   }
 };

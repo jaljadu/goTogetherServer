@@ -4,6 +4,6 @@ import { GetPricingConfig } from './priceconfig.controller';
 const router = Router();
 
 router.get('/', GetPricingConfig);
-
+router.get('/', GetPricingConfig);
 
 export default router;
