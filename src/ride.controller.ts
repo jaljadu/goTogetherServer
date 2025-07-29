@@ -31,21 +31,21 @@ if (Array.isArray(req.body.waypoints)) {
 
 export const getAllRides = async (_req: Request, res: Response) => {
   try {
-    const userId = _req.params.id;
-    console.log(_req.params);
+    console.log('get all')
+    const userId = _req.query.id;
+   
     const user = await User.findById(userId);
 
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!user)  res.status(404).json({ message: 'User not found' });
 
-    const { userType} = user;
+    const userRide = await Ride.find({ userId });
+    
+    if (!userRide)  res.status(400).json({ message: 'User ride not found' });
 
-    const userRide = await Ride.findOne({ userId }).sort({ createdAt: -1 });
-    if (!userRide) return res.status(400).json({ message: 'User ride not found' });
-
-    const userCoords = userRide.sourceLocation;
-    if (!userCoords) return res.status(400).json({ message: 'User location not found' });
-    console.log(userCoords);
-    const rideStart = new Date(userRide?.date ?? new Date());
+    const userCoords = userRide[0].sourceLocation;
+    if (!userCoords)  res.status(400).json({ message: 'User location not found' });
+    
+    const rideStart = new Date(userRide?.[0].date ?? new Date());
     const rideStartWindowStart = new Date(rideStart.getTime() - 2 * 60 * 60 * 1000);
     const rideStartWindowEnd = new Date(rideStart.getTime() + 2 * 60 * 60 * 1000);
 
@@ -54,7 +54,7 @@ export const getAllRides = async (_req: Request, res: Response) => {
     
       {
         $geoNear: {
-          near: { type: 'Point', coordinates: userCoords.coordinates },
+          near: { type: 'Point', coordinates: userCoords?.coordinates },
           distanceField: 'distance',
           maxDistance: 2000,
           spherical: true,
@@ -62,11 +62,22 @@ export const getAllRides = async (_req: Request, res: Response) => {
           query: {
             date: { $gte: rideStartWindowStart, $lte: rideStartWindowEnd },
             userId: { $ne: userId },
-            userType: userRide.userType === 'rider' 
+            userType: userRide[0].userType === 'rider' 
           ? { $in: ['biker', 'car_owner'] } 
           : 'rider',
           },
         },
+      },
+      {
+        $lookup: {
+          from: 'gt.users', // Collection name should be lowercase of your model
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'userInfo',
+        },
+      },
+      {
+        $unwind: '$userInfo', // If you want a single object instead of an array
       },
       {
         $group: {
@@ -78,7 +89,7 @@ export const getAllRides = async (_req: Request, res: Response) => {
         $replaceRoot: { newRoot: '$doc' },
       },
     ]);
-
+    console.log(rides);
     res.json(rides);
   } catch (err) {
     console.error('Error fetching rides:', err);
@@ -87,14 +98,25 @@ export const getAllRides = async (_req: Request, res: Response) => {
 };
 
 
+
+
 export const getRideById = async (req: Request, res: Response) => {
   try {
-    const ride = await Ride.findById(req.params.id).populate('driverId');
-    if (!ride) {
-      return res.json([]);
-    }
-    res.json(ride);
+
+    const userId = req.query.userid?.toString();
+    console.log(userId);
+    if (!userId)  res.status(400).json({ message: 'User ID is required' });
+
+    
+
+    // Get rides for the user, sorted by most recent
+    const rides = await Ride.find({ userId });
+    console.log(rides);
+    res.json(rides);
+   
   } catch (err) {
-    return res.json([]);
+    console.error(err);
+     res.status(500).json({ message: 'Something went wrong' });
   }
 };
+
