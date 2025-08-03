@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, response, Response } from 'express';
 import { User } from './User'
 import { OAuth2Client } from 'google-auth-library';
 
@@ -43,17 +43,19 @@ export const getUserDetails = async (_req: Request, res: Response) => {
     const payload = ticket.getPayload();
   
     const email = payload?.email;
-    const users = await User.find();
-    console.log('U' + users);
+    const users = await User?.find();
+    if(users?.length==0)
+      response.json({});
+    console.log('Uss' + users);
     const user = users.find((u:any) => u.email === email);
    
     if (!user) {
-       res.status(404).json({ message: 'User not found' });
+       res.json({});
     }
 
     res.json(user);
   }
   catch(err){
-       res.status(404).json({ message: 'User not found' });
+       res.json({});
   }
 };

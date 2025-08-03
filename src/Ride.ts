@@ -16,6 +16,7 @@ export const geoPointSchema = {
     type: String,
     required: false,
   },
+  description: { type: String },
 };
 
 const RideSchema = new mongoose.Schema({
