@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
+import { env } from 'process';
 
 export const getLocation = async (req: Request, res: Response)=> {  
   console.log(req); 
   const input = req.query.input; 
-  
-  const response = await fetch(`https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${input}&key=AIzaSyB-ssWyB19Ujf-ZlbXjrhuoIz66tFl1OOw&language=en`);
+  const response = await fetch(`${process.env.GOOGLE_MAP_URL}place/autocomplete/json?input=${input}&key=${process.env.GOOGLE_API_KEY}&language=en`);
   const data = await response.json();
   console.log(data);
   res.json(data);
@@ -13,7 +13,7 @@ export const getDirectionByPlace = async (req: Request, res: Response)=> {
   console.log(req); 
   const sourcePlaceId = req.query.sourcePlaceId; 
   const destinationPlaceId = req.query.destinationPlaceId; 
-  const response = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=${sourcePlaceId}&destination=${destinationPlaceId}&key=${'AIzaSyB-ssWyB19Ujf-ZlbXjrhuoIz66tFl1OOw'}`);
+  const response = await fetch(`${process.env.GOOGLE_MAP_URL}directions/json?origin=${sourcePlaceId}&destination=${destinationPlaceId}&key=${process.env.GOOGLE_API_KEY}`);
   const data = await response.json();
   console.log(data);
   res.json(data);
@@ -22,7 +22,7 @@ export const reverseGeocode = async (req: Request, res: Response)=> {
   console.log(req); 
   const lat = req.query.lat; 
   const lng = req.query.lng; 
-  const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${'AIzaSyB-ssWyB19Ujf-ZlbXjrhuoIz66tFl1OOw'}`);
+  const response = await fetch(`${process.env.GOOGLE_MAP_URL}geocode/json?latlng=${lat},${lng}&key=${process.env.GOOGLE_API_KEY}`);
   const data = await response.json();
   console.log(data);
   res.json(data);
