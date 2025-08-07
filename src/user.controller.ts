@@ -13,6 +13,26 @@ export const createUser = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error creating user', error: err });
   }
 };
+export const updateUser=async (req: Request, res: Response) => {
+  try {
+    
+    const userId = req.query.id;
+    
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: { lastLogin: new Date() } },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+       res.status(404).json({ message: 'User not found' });
+    }
+    res.json(updatedUser);  
+  }
+  catch{
+    res.json({});
+  }
+}
 
 export const getAllUsers = async (_req: Request, res: Response) => {
   try {

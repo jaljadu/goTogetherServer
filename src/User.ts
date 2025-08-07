@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
   phoneNumber: { type: String, required: true },
   imageUrl: { type: String },
   userType: { type: String, enum: ['biker', 'rider','car_owner'], required: true },
+  lastLogin: { type: Date } // ✅ Added this field
 }, { timestamps: true });
 
 export const User = mongoose.model('GT.Users', userSchema);
