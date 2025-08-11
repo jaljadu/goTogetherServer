@@ -7,8 +7,13 @@ import rideRequestRoutes from './riderequest.routs';
 import  priceRoutes from './price.routes';
 import notificationRoutes from './notification.router';
 import  locationRoutes from './locationsearch.route';
-
+import path from 'path';
 dotenv.config();
+const envFile = process.env.NODE_ENV === 'production' 
+  ? '.env.production' 
+  : '.env.development';
+
+dotenv.config({ path: path.resolve(process.cwd(), envFile) });
 
 const app = express();
 app.use(cors());
